@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Cloud App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="" />
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script> 
+  <h1>Movie Database</h1><br>
+  <div id="app">
+    <button v-on:click="CreateDatabase">Create Database</button>
+    <button v-on:click="DestroyDatabase">Destroy Database</button><br><br>
+    <input v-model="title" placeholder="Enter title" v-on:keyup.enter="QueryDatabase">
+    <input v-model="year" placeholder="Enter year of release" v-on:keyup.enter="QueryDatabase">
+    <input v-model="rating" placeholder="Enter minimum rating" v-on:keyup.enter="QueryDatabase">
+    <button v-on:click="QueryDatabase">Query Database</button><br>
+    <p id="error"></p><br>
+    <table id="table"></table>
+  </div>
+</body>
+
+<script>
+  var app = new Vue({
+    el:'#app',
+    data:{
+      title: '',
+      year: '',
+      rating: ''},
+    methods:{
+      CreateDatabase : createDatabase,
+      QueryDatabase : queryDatabase,
+      DestroyDatabase : destroyDatabase }
+  })
+
+  function createDatabase() {
+    console.log("Creating database...");
+    fetch("/createDatabase")
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => { 
+      console.log(data);
+      window.location.reload();
+      console.log("Database created.")
+    })
+  }
+
+  function queryDatabase() {
+    var table = document.getElementById('table');
+    table.innerHTML = null;
+    var error = document.getElementById('error');
+    error.innerHTML = null;
+
+    var title = formatInputs(this.title, this.year, this.rating);
+    console.log("Querying database...");
+    fetch("/queryDatabase/" + this.year + "/" + title)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      createTable(data, this.rating);
+    })
+  }
+
+  function createTable(data, rating) {
+    minimumRating = parseFloat(rating);
+    var count = 0;
+    for (var i in data){
+      let movieRating = data[i]["info"]["rating"];
+      if (movieRating < minimumRating){
+        delete data[i];
+        count++;                                  //track count of items deleted to decide if table should be printed
+      }
+    }
+
+    if (count != data.length){
+      var table = document.getElementById('table');
+      var headings = "<tr>";
+      headings += "<th>" + "Title" + "</th>" + "<th>" + "Rating" + "</th>" + "<th>" + "Rank" + "</th></tr>";
+      table.innerHTML += headings;
+      for (var i in data){
+        var row = "<tr>";
+        row += "<td>" + data[i]["title"] + "</td>" + "<td>" + data[i]["info"]["rating"] + "</td>" + "<td>" 
+          + data[i]["info"]["rank"] + "</td></tr>";
+        table.innerHTML += row;
+      }
+    }
+    
+  }
+
+  function formatInputs(title, year, rating){
+    var error = document.getElementById('error');
+    var char = title.charAt(0);
+    var capTitle = char.toUpperCase() + title.substr(1);        //capitalise the beginning of the string incase the user has not
+
+    if (year.length != 4)
+      error.innerHTML += "Invalid year entered. ";
+    if (rating > 10)
+      error.innerHTML += "Enter a rating less than 10.";
+
+    return capTitle;
+  }
+
+  function destroyDatabase() {
+    console.log("Deleting database...")
+    fetch("/deleteDatabase")
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => { 
+      console.log(data);
+      window.location.reload();
+    })
+  }
+
+</script>
+
+</html>

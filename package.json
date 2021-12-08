@@ -1,0 +1,17 @@
+{
+  "name": "cloud-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "cd",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.43.0",
+    "aws-sdk": "^2.1040.0",
+    "express": "^4.17.1",
+    "node-fetch": "^2.0.0"
+  }
+}
