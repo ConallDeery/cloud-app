@@ -32,8 +32,8 @@ var params = {
         { AttributeName: "title", AttributeType: "S" }
     ],
     ProvisionedThroughput: {       
-        ReadCapacityUnits: 1, 
-        WriteCapacityUnits: 1
+        ReadCapacityUnits: 5, 
+        WriteCapacityUnits: 5
     }
 };
 
