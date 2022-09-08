@@ -101,7 +101,7 @@
   function formatInputs(title, year, rating){
     var error = document.getElementById('error');
     var char = title.charAt(0);
-    var capTitle = char.toUpperCase() + title.substr(1);        //capitalise the beginning of the string incase the user has not
+    var capTitle = char.toUpperCase() + title.substr(1);        //capitalise the beginning of the string in case the user has not
 
     if (year.length != 4)
       error.innerHTML += "Invalid year entered. ";
