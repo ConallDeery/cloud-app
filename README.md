@@ -1,5 +1,5 @@
 # cloud-app
-A simple web application created using Vue.js, Node.js, DynamoDB and AWS.
+A web application created using Vue.js, Node.js, DynamoDB and AWS.
 
 The client (Vue.js) and server (Node.js) interact to create a database on AWS (AWS DynamoDB).
 This database is populated with movie data stored in a bucket on AWS. The web client
